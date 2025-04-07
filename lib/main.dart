@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'analyze.dart';
 
 void main() {
   runApp(const CropDoctorApp());
@@ -13,10 +14,7 @@ class CropDoctorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'CropDoctor',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        fontFamily: 'Roboto',
-      ),
+      theme: ThemeData(primarySwatch: Colors.green, fontFamily: 'Roboto'),
       home: const HomePage(),
     );
   }
@@ -102,10 +100,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          Image.asset(
-                            'assets/images/icrisat.png',
-                            height: 100,
-                          ),
+                          Image.asset('assets/images/icrisat.png', height: 100),
                           const SizedBox(height: 16),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -114,10 +109,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFF1B5E20),
-                                  Color(0xFF2E7D32),
-                                ],
+                                colors: [Color(0xFF1B5E20), Color(0xFF2E7D32)],
                               ),
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
@@ -146,9 +138,10 @@ class _HomePageState extends State<HomePage> {
 
                   // Titre et description
                   ShaderMask(
-                    shaderCallback: (bounds) => LinearGradient(
-                      colors: [Color(0xFF1B5E20), Color(0xFF2E7D32)],
-                    ).createShader(bounds),
+                    shaderCallback:
+                        (bounds) => LinearGradient(
+                          colors: [Color(0xFF1B5E20), Color(0xFF2E7D32)],
+                        ).createShader(bounds),
                     child: const Text(
                       'CropDoctor',
                       style: TextStyle(
@@ -179,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                         onPressed: _takePhoto,
                         icon: Icons.camera_alt_rounded,
                         label: 'TAKE PHOTO',
-                        color: Color.fromARGB(255, 48, 124, 51),
+                        color: Color.fromARGB(255, 36, 104, 38),
                       ),
                       _buildAnimatedButton(
                         onPressed: _pickImageFromGallery,
@@ -231,6 +224,35 @@ class _HomePageState extends State<HomePage> {
                                 fit: BoxFit.cover,
                               ),
                             ),
+                            const SizedBox(
+                              height: 16,
+                            ), // Espace avant le bouton
+
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const AnalyzePage(),
+                                  ),
+                                );
+                              },
+                              child: const Text("ANALYSE"),
+                            ),
+                            /*
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) =>
+                                            AnalyzePage(imageFile: _image!),
+                                  ),
+                                );
+                              },
+                              child: const Text("ANALYSE"),
+                            ), */
                           ],
                         ),
                       ),
@@ -271,10 +293,7 @@ class _HomePageState extends State<HomePage> {
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 16,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),

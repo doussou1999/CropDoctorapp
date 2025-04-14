@@ -10,9 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^0.8.4+4 # Added image_picker dependency
+  image_picker: ^1.0.4
   cupertino_icons: ^1.0.8
   image: ^3.0.1
+  tflite_flutter: ^0.11.0
+  flutter_isolate: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +26,5 @@ flutter:
 
   assets:
     - assets/images/icrisat.png
+    - assets/vgg16_model.tflite
+    - assets/labels.txt

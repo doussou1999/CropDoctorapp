@@ -228,6 +228,7 @@ class _HomePageState extends State<HomePage> {
                               height: 16,
                             ), // Espace avant le bouton
 
+                            /*
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
@@ -238,8 +239,7 @@ class _HomePageState extends State<HomePage> {
                                 );
                               },
                               child: const Text("ANALYSE"),
-                            ),
-                            /*
+                            ), */
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                                 );
                               },
                               child: const Text("ANALYSE"),
-                            ), */
+                            ),
                           ],
                         ),
                       ),

@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart'; // For compute()
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 class AnalyzePage extends StatefulWidget {
   final File imageFile;
@@ -17,7 +19,9 @@ class AnalyzePage extends StatefulWidget {
 class _AnalyzePageState extends State<AnalyzePage> {
   String _result = "Analyse en cours...";
   String _progress = "";
+  String _recommendation = "";
   bool _isLoading = true;
+  bool _gettingRecommendation = false;
   late Interpreter _interpreter;
   List<String> _labels = [];
   bool _processing = false;
@@ -56,7 +60,11 @@ class _AnalyzePageState extends State<AnalyzePage> {
       _updateProgress('Loading labels...');
       final labelData = await rootBundle.loadString('assets/labels.txt');
       _labels = labelData.split('\n');
-      _updateProgress('Loaded ${_labels.length} labels');
+      // Display results immediately after loading labels
+      setState(() {
+        _result = "Ready for analysis...";
+        _isLoading = false;
+      });
 
       // Start heavy processing using compute()
       final result = await compute(_runInference, {
@@ -66,11 +74,23 @@ class _AnalyzePageState extends State<AnalyzePage> {
         'interpreter': _interpreter,
       });
 
+      // Parse the result to extract class and confidence
+      final resultParts = result['result'].split('\n');
+      final predictedClass = resultParts[0].replaceFirst(
+        'Predicted class: ',
+        '',
+      );
+      final confidence =
+          resultParts.length > 1
+              ? resultParts[1].replaceFirst('Confidence: ', '')
+              : 'N/A';
+
       setState(() {
-        _result = result['result'];
+        _result = "Classe: $predictedClass\nConfiance: $confidence";
         _isLoading = false;
         _processing = false;
       });
+      _getRecommendation(predictedClass);
     } catch (e) {
       _updateProgress('Error: $e');
       setState(() {
@@ -162,41 +182,154 @@ class _AnalyzePageState extends State<AnalyzePage> {
     }
   }
 
+  Future<void> _getRecommendation(String predictedClass) async {
+    setState(() {
+      _gettingRecommendation = true;
+    });
+
+    try {
+      // Charger la clé API depuis .env
+      await dotenv.load();
+
+      try {
+        final model = GenerativeModel(
+          model: 'gemini-2.0-flash',
+          apiKey: dotenv.env['GEMINI_API_KEY']!,
+        );
+
+        final prompt = """
+        As an expert in groundnut cultivation, provide 3–5 concise treatment recommendations for the identified condition: $predictedClass. This application is designed to assist groundnut farmers; all classes pertain to diseases affecting groundnut plants, except for the 'healthy' class, which indicates a healthy plant. Present the recommendations as clear bullet points, each accompanied by relevant emojis.
+        """;
+
+        final response = await model.generateContent([Content.text(prompt)]);
+
+        setState(() {
+          _recommendation =
+              response.text?.replaceAll('•', '➤') ??
+              "Aucune recommandation disponible";
+        });
+      } catch (e) {
+        setState(() {
+          _recommendation = "Erreur API: ${e.toString()}";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _recommendation = "Erreur lors de la récupération des recommandations";
+      });
+    } finally {
+      setState(() {
+        _gettingRecommendation = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Résultat de l'analyse")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_processing)
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.6,
-                  maxWidth: MediaQuery.of(context).size.width * 0.9,
+      appBar: AppBar(
+        title: const Text(
+          "Analysis Result",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.blue.shade700,
+        centerTitle: true,
+        elevation: 4,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (_processing)
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.6,
+                    maxWidth: MediaQuery.of(context).size.width * 0.9,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(widget.imageFile, fit: BoxFit.contain),
+                  ),
                 ),
-                child: Image.file(widget.imageFile, fit: BoxFit.contain),
-              ),
-            const SizedBox(height: 30),
-            if (_isLoading) ...[
-              const CircularProgressIndicator(),
-              const SizedBox(height: 20),
-              Text(
-                _progress,
-                style: const TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-            ] else
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Text(
-                  _result,
-                  style: const TextStyle(fontSize: 18),
+              const SizedBox(height: 30),
+              if (_isLoading) ...[
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 6,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.blue.shade700,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  _progress,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
                   textAlign: TextAlign.center,
                 ),
-              ),
-          ],
+              ] else
+                Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    Text(
+                      _result,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue.shade800,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Recommandations:",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green.shade800,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            _gettingRecommendation
+                                ? CircularProgressIndicator()
+                                : SizedBox(
+                                  height: 300,
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      _recommendation,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     );

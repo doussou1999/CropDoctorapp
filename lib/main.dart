@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'analyze.dart';
+import 'login.dart';
+import 'register.dart';
+import 'history.dart';
 
 void main() {
   runApp(const CropDoctorApp());
@@ -30,6 +33,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   File? _image; // To store the selected/taken image
   final ImagePicker _picker = ImagePicker();
+
+  int? _userId; // Logged-in user ID, null if not logged in
 
   // Method to pick an image from the gallery
   Future<void> _pickImageFromGallery() async {
@@ -69,10 +74,53 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _onLoginSuccess(int userId) {
+    setState(() {
+      _userId = userId;
+    });
+  }
+
+  void _logout() {
+    setState(() {
+      _userId = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5), // Couleur de fond plus claire
+      appBar: AppBar(
+        title: const Text('CropDoctor'),
+        actions: [
+          if (_userId == null)
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => LoginPage(onLoginSuccess: _onLoginSuccess),
+                  ),
+                );
+              },
+              child: const Text(
+                'Login',
+                style: TextStyle(
+                  color: Colors.black,
+                ), // Changed from white to black
+              ),
+            )
+          else
+            TextButton(
+              onPressed: _logout,
+              child: const Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.black,
+                ), // Changed from white to black
+              ),
+            ),
+        ],
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -187,7 +235,22 @@ class _HomePageState extends State<HomePage> {
                   // Nouveau bouton History
                   _buildAnimatedButton(
                     onPressed: () {
-                      // TODO: Implémenter la navigation vers l'historique
+                      if (_userId != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HistoryPage(userId: _userId!),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Veuillez vous connecter pour voir l\'historique',
+                            ),
+                          ),
+                        );
+                      }
                     },
                     icon: Icons.history_rounded,
                     label: 'HISTORY OF ANALYSIS',
@@ -228,26 +291,16 @@ class _HomePageState extends State<HomePage> {
                               height: 16,
                             ), // Espace avant le bouton
 
-                            /*
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const AnalyzePage(),
-                                  ),
-                                );
-                              },
-                              child: const Text("ANALYSE"),
-                            ), */
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder:
-                                        (context) =>
-                                            AnalyzePage(imageFile: _image!),
+                                        (context) => AnalyzePage(
+                                          imageFile: _image!,
+                                          userId: _userId,
+                                        ),
                                   ),
                                 );
                               },

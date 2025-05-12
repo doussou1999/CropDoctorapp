@@ -6,11 +6,13 @@ import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'db_helper.dart';
 
 class AnalyzePage extends StatefulWidget {
   final File imageFile;
+  final int? userId;
 
-  const AnalyzePage({super.key, required this.imageFile});
+  const AnalyzePage({super.key, required this.imageFile, this.userId});
 
   @override
   State<AnalyzePage> createState() => _AnalyzePageState();
@@ -90,6 +92,19 @@ class _AnalyzePageState extends State<AnalyzePage> {
         _isLoading = false;
         _processing = false;
       });
+
+      // Save analysis result to database if user is logged in
+      if (widget.userId != null) {
+        final dbHelper = DBHelper();
+        final now = DateTime.now().toIso8601String();
+        await dbHelper.insertAnalysis(
+          widget.userId!,
+          widget.imageFile.path,
+          _result,
+          now,
+        );
+      }
+
       _getRecommendation(predictedClass);
     } catch (e) {
       _updateProgress('Error: $e');

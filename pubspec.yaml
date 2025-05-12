@@ -17,6 +17,8 @@ dependencies:
   flutter_isolate: ^2.0.0
   google_generative_ai: ^0.4.6
   flutter_dotenv: ^5.0.2
+  sqflite: ^2.2.8+4
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:

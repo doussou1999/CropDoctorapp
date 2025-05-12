@@ -246,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
-                              'Veuillez vous connecter pour voir l\'historique',
+                              ' Please log in to view the history',
                             ),
                           ),
                         );
@@ -304,7 +304,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 );
                               },
-                              child: const Text("ANALYSE"),
+                              child: const Text("ANALYZE"),
                             ),
                           ],
                         ),

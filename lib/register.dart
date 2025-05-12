@@ -22,7 +22,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
-        _errorMessage = 'Les mots de passe ne correspondent pas';
+        _errorMessage = 'Passwords do not match';
         _successMessage = null;
       });
       return;
@@ -41,11 +41,11 @@ class _RegisterPageState extends State<RegisterPage> {
         _passwordController.text.trim(),
       );
       setState(() {
-        _successMessage = 'Compte créé avec succès. Vous pouvez maintenant vous connecter.';
+        _successMessage = 'Account created successfully. You can now log in.';
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Erreur lors de la création du compte: ${e.toString()}';
+        _errorMessage = 'Failed to create account: ${e.toString()}';
       });
     } finally {
       setState(() {
@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Créer un compte'),
+        title: const Text('Sign up'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -84,32 +84,32 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               TextFormField(
                 controller: _usernameController,
-                decoration: const InputDecoration(labelText: 'Nom d\'utilisateur'),
+                decoration: const InputDecoration(labelText: 'Username'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer un nom d\'utilisateur';
+                    return 'Please enter a username';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Mot de passe'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer un mot de passe';
+                    return 'Please enter a password';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _confirmPasswordController,
-                decoration: const InputDecoration(labelText: 'Confirmer le mot de passe'),
+                decoration: const InputDecoration(labelText: 'Confirm Password'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Veuillez confirmer le mot de passe';
+                    return 'Please confirm your password';
                   }
                   return null;
                 },
@@ -119,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
                       onPressed: _register,
-                      child: const Text('Créer un compte'),
+                      child: const Text('Sign up'),
                     ),
             ],
           ),

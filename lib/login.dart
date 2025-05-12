@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(context).pop();
     } else {
       setState(() {
-        _errorMessage = 'Nom d\'utilisateur ou mot de passe incorrect';
+        _errorMessage = 'Incorrect username or password';
       });
     }
   }
@@ -49,9 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Connexion'),
-      ),
+      appBar: AppBar(title: const Text('Connection')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -68,21 +66,21 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               TextFormField(
                 controller: _usernameController,
-                decoration: const InputDecoration(labelText: 'Nom d\'utilisateur'),
+                decoration: const InputDecoration(labelText: 'Username'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer un nom d\'utilisateur';
+                    return 'Please enter a username';
                   }
                   return null;
                 },
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Mot de passe'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer un mot de passe';
+                    return 'Please enter a password';
                   }
                   return null;
                 },
@@ -91,9 +89,9 @@ class _LoginPageState extends State<LoginPage> {
               _isLoading
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
-                      onPressed: _login,
-                      child: const Text('Se connecter'),
-                    ),
+                    onPressed: _login,
+                    child: const Text('Login'),
+                  ),
               const SizedBox(height: 20),
               TextButton(
                 onPressed: () {
@@ -101,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     MaterialPageRoute(builder: (_) => const RegisterPage()),
                   );
                 },
-                child: const Text('Créer un compte'),
+                child: const Text('Create an account'),
               ),
             ],
           ),

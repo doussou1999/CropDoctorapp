@@ -221,16 +221,16 @@ class _AnalyzePageState extends State<AnalyzePage> {
         setState(() {
           _recommendation =
               response.text?.replaceAll('•', '➤') ??
-              "Aucune recommandation disponible";
+              "Any recommandation available";
         });
       } catch (e) {
         setState(() {
-          _recommendation = "Erreur API: ${e.toString()}";
+          _recommendation = "API Error: ${e.toString()}";
         });
       }
     } catch (e) {
       setState(() {
-        _recommendation = "Erreur lors de la récupération des recommandations";
+        _recommendation = "Error while fetching recommendations";
       });
     } finally {
       setState(() {

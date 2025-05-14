@@ -58,9 +58,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('CropDoctor Chatbot'),
-      ),
+      appBar: AppBar(title: const Text('CropDoctor Chatbot')),
       body: Column(
         children: [
           Expanded(
@@ -71,12 +69,15 @@ class _ChatbotPageState extends State<ChatbotPage> {
                 final message = _messages[index];
                 return Align(
                   alignment:
-                      message.isUser ? Alignment.centerRight : Alignment.centerLeft,
+                      message.isUser
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: message.isUser ? Colors.green[200] : Colors.grey[300],
+                      color:
+                          message.isUser ? Colors.green[200] : Colors.grey[300],
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(

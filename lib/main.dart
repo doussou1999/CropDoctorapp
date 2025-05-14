@@ -5,6 +5,7 @@ import 'analyze.dart';
 import 'login.dart';
 import 'register.dart';
 import 'history.dart';
+import 'chatbot.dart';
 
 void main() {
   runApp(const CropDoctorApp());
@@ -255,6 +256,20 @@ class _HomePageState extends State<HomePage> {
                     icon: Icons.history_rounded,
                     label: 'HISTORY OF ANALYSIS',
                     color: Color(0xFF1565C0),
+                  ),
+                  const SizedBox(height: 20),
+                  _buildAnimatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ChatbotPage(),
+                        ),
+                      );
+                    },
+                    icon: Icons.chat_bubble_outline_rounded,
+                    label: 'CHATBOT',
+                    color: Color(0xFF1B5E20),
                   ),
                   const SizedBox(height: 40),
 

@@ -257,11 +257,11 @@ class _AnalyzePageState extends State<AnalyzePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_processing)
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 ConstrainedBox(
                   constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height * 0.6,
@@ -272,78 +272,79 @@ class _AnalyzePageState extends State<AnalyzePage> {
                     child: Image.file(widget.imageFile, fit: BoxFit.contain),
                   ),
                 ),
-              const SizedBox(height: 30),
-              if (_isLoading) ...[
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 6,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Colors.blue.shade700,
+                const SizedBox(height: 30),
+                if (_isLoading) ...[
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 6,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.blue.shade700,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  _progress,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ] else
-                Column(
-                  children: [
-                    const SizedBox(height: 30),
-                    Text(
-                      _result,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade800,
-                      ),
-                      textAlign: TextAlign.center,
+                  const SizedBox(height: 20),
+                  Text(
+                    _progress,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const SizedBox(height: 20),
-                    Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    textAlign: TextAlign.center,
+                  ),
+                ] else
+                  Column(
+                    children: [
+                      const SizedBox(height: 30),
+                      Text(
+                        _result,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade800,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              "Recommandations:",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green.shade800,
+                      const SizedBox(height: 20),
+                      Card(
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Recommandations:",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade800,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            _gettingRecommendation
-                                ? CircularProgressIndicator()
-                                : SizedBox(
-                                  height: 300,
-                                  child: SingleChildScrollView(
-                                    child: Text(
-                                      _recommendation,
-                                      style: const TextStyle(fontSize: 16),
+                              const SizedBox(height: 10),
+                              _gettingRecommendation
+                                  ? CircularProgressIndicator()
+                                  : SizedBox(
+                                    height: 300,
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        _recommendation,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
                                     ),
                                   ),
-                                ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-            ],
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
       ),

@@ -22,7 +22,7 @@ CropDoctor is a Flutter mobile application designed to assist farmers and agricu
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/oliviertina29/t1.git
+   git clone https://github.com/doussou1999/t1.git
    cd t1
    ```
 
